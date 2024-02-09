@@ -40,6 +40,15 @@ def home():
 
 # HTTP DELETE - Delete Record
 
+
+@app.route("/all")
+def get_all_cafes():
+    with app.app_context():
+        all_cafes = db.session.execute(db.select(Cafe)).scalars().all()
+    cafes_json_list = [cafe.to_dict() for cafe in all_cafes]
+    return jsonify(cafes=cafes_json_list)
+
+
 @app.route("/random")
 def get_random_cafe():
     row_count = db.session.query(Cafe).count()
@@ -68,7 +77,7 @@ def get_random_cafe():
 
     # Instead, create a method in the Cafe class that returns a dict.
     # See ./models/cafe.py
-    return jsonify(random_cafe.to_dict())
+    return jsonify(cafe=random_cafe.to_dict())
 
 
 if __name__ == '__main__':
