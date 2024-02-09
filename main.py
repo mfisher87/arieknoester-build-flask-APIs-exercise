@@ -53,7 +53,6 @@ def get_all_cafes():
 def get_random_cafe():
     row_count = db.session.query(Cafe).count()
     random_row_id = random.randint(1, row_count)
-    print(random_row_id)
     with app.app_context():
         random_cafe = db.get_or_404(Cafe, random_row_id)
     # The long way to create a dict to jsonify, but you'd have to repeat this
@@ -78,6 +77,25 @@ def get_random_cafe():
     # Instead, create a method in the Cafe class that returns a dict.
     # See ./models/cafe.py
     return jsonify(cafe=random_cafe.to_dict())
+
+
+@app.route("/search")
+def search():
+    loc = request.args["loc"]
+    with app.app_context():
+        cafes_by_user_loc = db.session.execute(db.select(Cafe).where(Cafe.location == loc)).scalars().all()
+
+        if not cafes_by_user_loc:
+            return jsonify(
+                {
+                    "error": {
+                        "Not Found": " Sorry, we don't have a cafe at that location"
+                    }
+                }
+            )
+        else:
+            cafes_by_user_loc_list = [cafe.to_dict() for cafe in cafes_by_user_loc]
+            return jsonify(cafes=cafes_by_user_loc_list)
 
 
 if __name__ == '__main__':
