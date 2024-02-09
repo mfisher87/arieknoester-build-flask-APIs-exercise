@@ -24,3 +24,7 @@ class Cafe(db.Model):
     has_sockets: Mapped[bool] = mapped_column(Boolean, nullable=False)
     can_take_calls: Mapped[bool] = mapped_column(Boolean, nullable=False)
     coffee_price: Mapped[str] = mapped_column(String(250), nullable=True)
+
+    # https://www.slingacademy.com/article/sqlalchemy-convert-query-results-into-dictionary/#Advanced_Method_Automating_Dictionary_Conversion
+    def to_dict(self):
+        return {"cafe": {column.name: getattr(self, column.name) for column in self.__table__.columns}}
