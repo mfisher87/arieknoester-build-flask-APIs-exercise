@@ -1,0 +1,45 @@
+ci:
+  autoupdate_schedule: "monthly"
+  autoupdate_commit_msg: "chore: update pre-commit hooks"
+  autofix_prs: false # Comment "pre-commit.ci autofix" on a PR to trigger
+
+repos:
+
+  # Some miscellaneous safety and validity checks/fixers
+  - repo: "https://github.com/pre-commit/pre-commit-hooks"
+    rev: "v4.5.0"
+    hooks:
+      - id: "check-added-large-files"
+      - id: "check-case-conflict"
+      - id: "check-merge-conflict"
+      - id: "check-symlinks"
+      - id: "check-json"
+      - id: "check-toml"
+      - id: "check-yaml"
+      - id: "debug-statements"
+      - id: "end-of-file-fixer"
+      - id: "mixed-line-ending"
+      - id: "trailing-whitespace"
+
+
+  # Python linting and formatting checks/fixers
+  # NOTE: Can be further configured in `pyproject.toml`
+  - repo: "https://github.com/astral-sh/ruff-pre-commit"
+    rev: "v0.2.1"
+    hooks:
+      - id: "ruff"
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      - id: "ruff-format"
+
+
+  # Python type checking
+  # NOTE: Can be further configured in `pyproject.toml`
+  # NOTE: Type checking run in pre-commit is limited (because it runs in an
+  #       isolated environment, it doesn't have access to the types of your
+  #       app's dependencies like Flask), but it's better than nothing! To
+  #       improve on this, Mypy can be run in a more complete environment using
+  #       GitHub Actions, manually from the command-line, or with an IDE.
+  - repo: "https://github.com/pre-commit/mirrors-mypy"
+    rev: "v1.8.0"
+    hooks:
+      - id: "mypy"
