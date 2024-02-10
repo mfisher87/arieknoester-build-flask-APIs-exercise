@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Boolean
 
@@ -10,9 +11,13 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
+# Workaround for issues type-checking flask-sqlalchemy:
+#     https://github.com/dropbox/sqlalchemy-stubs/issues/76#issuecomment-595839159
+BaseModel: DeclarativeMeta = db.Model
+
 
 # Cafe TABLE Configuration
-class Cafe(db.Model):
+class Cafe(BaseModel):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     map_url: Mapped[str] = mapped_column(String(500), nullable=False)
